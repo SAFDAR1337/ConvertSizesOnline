@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Size Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 20px 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    p {
+      text-align: center;
+      color: #555;
+      font-size: 14px;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      min-height: 120px;
+      font-family: monospace;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      resize: vertical;
+    }
+    .button-group {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      cursor: pointer;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+    .btn-blue {
+      background-color: #007BFF;
+    }
+    .btn-green {
+      background-color: #28a745;
+    }
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px 20px;
+      }
+      button {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Size Converter</h1>
+    <p>Paste your list of sizes (one per line) from Excel and click "Convert".</p>
+    
+    <label for="sizesInput">Customer Sizes:</label>
+    <textarea id="sizesInput" placeholder="e.g. s&#10;m&#10;AL&#10;ys&#10;small"></textarea>
+    
+    <div class="button-group">
+      <button class="btn-blue" onclick="convertSizes()">Convert</button>
+      <button class="btn-blue" onclick="clearFields()">Clear</button>
+    </div>
+    
+    <label for="output">Converted Sizes:</label>
+    <textarea id="output" readonly placeholder="Your converted sizes will appear here..."></textarea>
+    
+    <div class="button-group">
+      <button class="btn-blue" onclick="copyOutput()" id="copyBtn">Copy Output</button>
+    </div>
+  </div>
+  
+  <script>
+    // Mapping object for converting customer size inputs to standardized sizes.
+    // All keys are in uppercase.
+    const sizeMapping = {
+      "S":         "Adult Small",
+      "SMALL":     "Adult Small",
+      "M":         "Adult Medium",
+      "MEDIUM":    "Adult Medium",
+      "L":         "Adult Large",
+      "LARGE":     "Adult Large",
+      "AS":        "Adult Small",
+      "AM":        "Adult Medium",
+      "AL":        "Adult Large",
+      "XS":        "Adult X-Small",
+      "XL":        "Adult X-Large",
+      "XXL":       "Adult 2X-Large",
+      "XXXL":      "Adult 3X-Large",
+      "XXXXL":     "Adult 4X-Large",
+      "XXXXXL":    "Adult 5X-Large",
+      "AXS":       "Adult X-Small",
+      "AXL":       "Adult X-Large",
+      "AXXL":      "Adult 2X-Large",
+      "AXXXL":     "Adult 3X-Large",
+      "AXXXXL":    "Adult 4X-Large",
+      "AXXXXXL":   "Adult 5X-Large",
+      "ADULT EXTRA SMALL": "Adult X-Small",
+      "ADULT EXTRA LARGE": "Adult X-Large",
+      "YS":        "Youth Small",
+      "YM":        "Youth Medium",
+      "YL":        "Youth Large",
+      "YXS":       "Youth X-Small",
+      "YXL":       "Youth X-Large",
+      "YXXL":      "Youth 2X-Large",
+      "YXXXL":     "Youth 3X-Large",
+      "YXXXXL":    "Youth 4X-Large",
+      "YXXXXXL":   "Youth 5X-Large",
+      "YOUTH EXTRA SMALL": "Youth X-Small",
+      "YOUTH EXTRA LARGE": "Youth X-Large"
+    };
+
+    function convertSizes() {
+      const inputField = document.getElementById('sizesInput');
+      const inputValue = inputField.value.trim();
+      const sizeArray = inputValue.split(/\r?\n/).map(s => s.trim()).filter(s => s);
+      const converted = sizeArray.map(size => {
+        const upperSize = size.toUpperCase();
+        return sizeMapping[upperSize] || `Unrecognized size: "${size}"`;
+      });
+      document.getElementById('output').value = converted.join('\n');
+    }
+
+    function copyOutput() {
+      const outputArea = document.getElementById('output');
+      outputArea.select();
+      document.execCommand('copy');
+      
+      const copyBtn = document.getElementById('copyBtn');
+      copyBtn.classList.remove('btn-blue');
+      copyBtn.classList.add('btn-green');
+      const originalText = "Copy Output";
+      copyBtn.textContent = "Sizes Copied";
+      
+      setTimeout(() => {
+        copyBtn.classList.remove('btn-green');
+        copyBtn.classList.add('btn-blue');
+        copyBtn.textContent = originalText;
+      }, 3000);
+    }
+
+    function clearFields() {
+      document.getElementById('sizesInput').value = '';
+      document.getElementById('output').value = '';
+    }
+  </script>
+</body>
+</html>
